@@ -91,7 +91,7 @@ $(function() {
 <div class="line">opt.<a class="code hl_variable" href="structphyper_1_1Options.html#a50615b2e1137e100a6cda600e25e4a1c">upper_tail</a> = <span class="keyword">true</span>;</div>
 <div class="line">opt.<a class="code hl_variable" href="structphyper_1_1Options.html#ad5c539121bea3832bf216583f2aecb1e">log</a> = <span class="keyword">false</span>;</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// Equivalent to stats::phyper(4, 20, 10000, 100, lower.tail=FALSE)</span></div>
+<div class="line"><span class="comment">// Equivalent to stats::phyper(5-1, 20, 10000, 100, lower.tail=FALSE)</span></div>
 <div class="line"><a class="code hl_function" href="namespacephyper.html#af6f1991963966528e08b3577174f5661">phyper::compute</a>(</div>
 <div class="line">    <span class="comment">/* number of marker genes from the pathway */</span> 5, </div>
 <div class="line">    <span class="comment">/* number of genes in the pathway */</span> 20, </div>
@@ -99,12 +99,12 @@ $(function() {
 <div class="line">    <span class="comment">/* number of marker genes */</span> 100,</div>
 <div class="line">    opt</div>
 <div class="line">);</div>
-<div class="ttc" id="anamespacephyper_html_af6f1991963966528e08b3577174f5661"><div class="ttname"><a href="namespacephyper.html#af6f1991963966528e08b3577174f5661">phyper::compute</a></div><div class="ttdeci">double compute(Count_ drawn_inside, Count_ num_inside, Count_ num_outside, Count_ num_drawn, const Options &amp;options)</div><div class="ttdef"><b>Definition</b> phyper.hpp:88</div></div>
+<div class="ttc" id="anamespacephyper_html_af6f1991963966528e08b3577174f5661"><div class="ttname"><a href="namespacephyper.html#af6f1991963966528e08b3577174f5661">phyper::compute</a></div><div class="ttdeci">double compute(Count_ drawn_inside, Count_ num_inside, Count_ num_outside, Count_ num_drawn, const Options &amp;options)</div><div class="ttdef"><b>Definition</b> phyper.hpp:89</div></div>
 <div class="ttc" id="aphyper_8hpp_html"><div class="ttname"><a href="phyper_8hpp.html">phyper.hpp</a></div><div class="ttdoc">Compute hypergeometric tail probabilities.</div></div>
 <div class="ttc" id="astructphyper_1_1Options_html"><div class="ttname"><a href="structphyper_1_1Options.html">phyper::Options</a></div><div class="ttdoc">Options for compute().</div><div class="ttdef"><b>Definition</b> phyper.hpp:20</div></div>
 <div class="ttc" id="astructphyper_1_1Options_html_a50615b2e1137e100a6cda600e25e4a1c"><div class="ttname"><a href="structphyper_1_1Options.html#a50615b2e1137e100a6cda600e25e4a1c">phyper::Options::upper_tail</a></div><div class="ttdeci">bool upper_tail</div><div class="ttdef"><b>Definition</b> phyper.hpp:31</div></div>
 <div class="ttc" id="astructphyper_1_1Options_html_ad5c539121bea3832bf216583f2aecb1e"><div class="ttname"><a href="structphyper_1_1Options.html#ad5c539121bea3832bf216583f2aecb1e">phyper::Options::log</a></div><div class="ttdeci">bool log</div><div class="ttdef"><b>Definition</b> phyper.hpp:24</div></div>
-</div><!-- fragment --><p>Note that the upper-tailed cumulative probability returned by <code><a class="el" href="namespacephyper.html#af6f1991963966528e08b3577174f5661">phyper::compute()</a></code> includes the probability mass of the observed number of marker genes in the pathway. This means that it can be directly used as the overrepresentation p-value for the pathway. For comparable results from <code>stats::phyper()</code>, users should subtract 1 from the <code>q=</code> argument..</p>
+</div><!-- fragment --><p>Note that the upper-tailed cumulative probability returned by <code><a class="el" href="namespacephyper.html#af6f1991963966528e08b3577174f5661">phyper::compute()</a></code> includes the probability mass of the observed number of marker genes in the pathway. This means that it can be directly used as the overrepresentation p-value for the pathway. For comparable results from <code>stats::phyper()</code>, users should subtract 1 from the <code>q=</code> argument as inicated above.</p>
 <p>Check out the <a href="https://libscran.github.io/phyper">reference documentation</a> for more details.</p>
 <h1>Building projects</h1>
 <h2>CMake with <code>FetchContent</code></h2>
