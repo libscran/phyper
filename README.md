@@ -19,7 +19,7 @@ phyper::Options opt;
 opt.upper_tail = true;
 opt.log = false;
 
-// Equivalent to stats::phyper(4, 20, 10000, 100, lower.tail=FALSE)
+// Equivalent to stats::phyper(5-1, 20, 10000, 100, lower.tail=FALSE)
 phyper::compute(
     /* number of marker genes from the pathway */ 5, 
     /* number of genes in the pathway */ 20, 
@@ -31,7 +31,7 @@ phyper::compute(
 
 Note that the upper-tailed cumulative probability returned by `phyper::compute()` includes the probability mass of the observed number of marker genes in the pathway.
 This means that it can be directly used as the overrepresentation p-value for the pathway.
-For comparable results from `stats::phyper()`, users should subtract 1 from the `q=` argument..
+For comparable results from `stats::phyper()`, users should subtract 1 from the `q=` argument as inicated above.
 
 Check out the [reference documentation](https://libscran.github.io/phyper) for more details.
 

@@ -81,8 +81,9 @@ long double lfactorial(Count_ x) {
  * @param num_drawn Number of genes that were drawn.
  * @param options Further options for the calculation.
  *
- * @return Probability of randomly drawing at least `drawn_inside` genes from the set, if `set_upper_tail()` is set to true.
- * Otherwise, the probability of randomly drawing no more than `drawn_inside` genes from the set is returned.
+ * @return Probability of randomly drawing at least `drawn_inside` genes from the set, if `Options::upper_tail = true`.
+ * Otherwise, the probability of randomly drawing no more than `drawn_inside` genes from the set. 
+ * These probabilities are log-transformed in `Options::log = true`.
  */
 template<typename Count_>
 double compute(Count_ drawn_inside, Count_ num_inside, Count_ num_outside, Count_ num_drawn, const Options& options) {
@@ -108,12 +109,15 @@ double compute(Count_ drawn_inside, Count_ num_inside, Count_ num_outside, Count
         --drawn_inside;
     }
 
-    // We flip the tail to reduce the number of iterations during the cumulative sum.
+    // We flip the tail to reduce the number of iterations during the
+    // cumulative sum.  Note that 'alt_drawn_inside' is guaranteed to be
+    // non-negative due to edge case protection, keeping in mind we already
+    // decremented drawn_inside when upper_tail = true.
     bool needs_upper = options.upper_tail;
-    Count_ num_total = num_outside + num_inside;
-    if (drawn_inside > num_drawn - drawn_inside - 1) {
+    Count_ alt_drawn_inside = num_drawn - drawn_inside - 1;
+    if (drawn_inside > alt_drawn_inside) {
         std::swap(num_inside, num_outside);
-        drawn_inside = num_drawn - drawn_inside - 1;
+        drawn_inside = alt_drawn_inside;
         needs_upper = !needs_upper;
     }
 
@@ -130,6 +134,7 @@ double compute(Count_ drawn_inside, Count_ num_inside, Count_ num_outside, Count
      */
     Count_ denom1a = drawn_inside, denom1b = num_inside - denom1a;
     Count_ denom2a = num_drawn - drawn_inside, denom2b = num_outside - denom2a; // be careful with the second subtraction to avoid underflow for unsigned Count_.
+    Count_ num_total = num_outside + num_inside;
     long double log_probability = 
         + internal::lfactorial(num_inside) - internal::lfactorial(denom1a) - internal::lfactorial(denom1b) // lchoose(num_inside, num_inside) 
         + internal::lfactorial(num_outside) - internal::lfactorial(denom2a) - internal::lfactorial(denom2b) // lchoose(num_outside, num_drawn - drawn_inside) 
@@ -139,15 +144,14 @@ double compute(Count_ drawn_inside, Count_ num_inside, Count_ num_outside, Count
     long double partial_probability = 1;
 
     for (Count_ k = drawn_inside; k > 0; --k) {
-        if (denom1a == 0 || denom2b == 0) {
-            // No point proceeding as we must have gone past the boundaries of the distribution.
-            break;
-        }
         ++denom1b;
         ++denom2a;
 
         long double mult = (static_cast<long double>(denom1a) * static_cast<long double>(denom2b)) / (static_cast<long double>(denom1b) * static_cast<long double>(denom2a));
         partial_probability *= mult;
+        if (partial_probability == 0) { // underflow to zero, no point continuing...
+            break;
+        }
         cumulative += partial_probability;
 
         --denom1a;
