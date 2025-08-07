@@ -43,6 +43,9 @@ TEST(HypergeometricTail, Basic) {
         // > phyper(20, 33, 8, 25, lower.tail=FALSE)
         scran_tests::compare_almost_equal(0.3743729, phyper::compute(21, 33, 8, 25, hopt), /* tol=*/ 0.001);
 
+        // > phyper(9, 18, 18218 - 18, 103, lower.tail=FALSE)
+        scran_tests::compare_almost_equal(8.983946e-19, phyper::compute(10, 18, 18218-18, 103, hopt), /* tol=*/ 0.001);
+
         // Check for correct behavior when num_black, num_white < num_drawn.
         {
             // > phyper(3, 5, 8, 10, lower.tail=FALSE)
