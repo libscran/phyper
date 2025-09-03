@@ -1,4 +1,4 @@
-# Hypergeometric tail calculations
+# Hypergeometric tail calculations in C++
 
 ![Unit tests](https://github.com/libscran/phyper/actions/workflows/run-tests.yaml/badge.svg)
 ![Documentation](https://github.com/libscran/phyper/actions/workflows/doxygenate.yaml/badge.svg)
@@ -7,7 +7,7 @@
 ## Overview
 
 The **phyper** library (pronounced "viper") computes the cumulative probability for a hypergeometric distribution,
-intended for testing overrepresentation of pathways/signatures within the set of marker genes.
+intended for testing overrepresentation of gene sets within a selection of marker genes.
 The interface is based on R's `stats::phyper()` function, with support for (log-transformed) probabilities of either tail.
 
 ## Quick start

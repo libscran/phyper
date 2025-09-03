@@ -2,6 +2,7 @@
 #define PHYPER_PHYPER_HPP
 
 #include <cmath>
+#include <limits>
 
 /**
  * @file phyper.hpp
@@ -70,20 +71,21 @@ long double lfactorial(Count_ x) {
 
 /**
  * Compute the tail probabilities for the hypergeometric distribution.
- * It is intended for use in quantifying gene set enrichment in marker lists.
- * The "successes" are the genes in the set, the "failures" are all other genes, and the drawing process typically involves picking the top N markers;
+ * It is intended for use in quantifying gene set enrichment in a list of top marker genes.
+ * The "successes" are the genes in the set, the "failures" are all other genes, and the drawing process typically involves selecting the top markers;
  * our aim is to compute the p-value for enrichment of genes in the set among the top markers.
  *
- * @tparam Count_ Integer type for the number of genes.
- * @param drawn_inside Number of genes inside the set that were drawn.
- * @param num_inside Total number of genes in the set.
- * @param num_outside Total number of genes outside the set.
- * @param num_drawn Number of genes that were drawn.
+ * @tparam Count_ Integer type of the number of genes.
+ *
+ * @param drawn_inside Number of genes in the gene set that were selected as markers.
+ * @param num_inside Total number of genes in the gene set.
+ * @param num_outside Total number of genes outside the gene set.
+ * @param num_drawn Number of genes that were selected as top markers.
  * @param options Further options for the calculation.
  *
- * @return Probability of randomly drawing at least `drawn_inside` genes from the set, if `Options::upper_tail = true`.
- * Otherwise, the probability of randomly drawing no more than `drawn_inside` genes from the set. 
- * These probabilities are log-transformed in `Options::log = true`.
+ * @return Probability of randomly selecting at least `drawn_inside` genes from the gene set, if `Options::upper_tail = true`.
+ * Otherwise, the probability of randomly selecting no more than `drawn_inside` genes from the gene set. 
+ * These probabilities are log-transformed when `Options::log = true`.
  */
 template<typename Count_>
 double compute(Count_ drawn_inside, Count_ num_inside, Count_ num_outside, Count_ num_drawn, const Options& options) {
@@ -110,9 +112,10 @@ double compute(Count_ drawn_inside, Count_ num_inside, Count_ num_outside, Count
     }
 
     // We flip the problem to ensure that we're always computing the smaller tail for accuracy.
+    // (Smaller in terms of the cumulative probability, and usually - but not necessarily - the number of iterations.)
     // If that's the tail that we wanted, then great; we can compute it directly without worrying about loss of precision from '1 - [some larger tail]'.
-    // If it's not the tail we wanted, then we compute '1 - [this smaller tail]' and we don't have to worry about accumulation of errors from summation.
-    // The smaller tail is usually also faster to compute but this is a secondary effect.
+    // If it's not the tail we wanted, then we compute '1 - [this smaller tail]' and we don't have to worry about accumulation of errors from summation towards 1.
+    // In addition, the smaller tail is usually faster to compute but this is a secondary effect.
     bool needs_upper = options.upper_tail;
     if (static_cast<double>(drawn_inside) * static_cast<double>(num_inside + num_outside) > static_cast<double>(num_drawn) * static_cast<double>(num_inside)) {
         std::swap(num_inside, num_outside);
@@ -167,10 +170,10 @@ double compute(Count_ drawn_inside, Count_ num_inside, Count_ num_outside, Count
     }
 
     if (options.log) {
-        // Logic from https://github.com/SurajGupta/r-source/blob/master/src/nmath/dpq.h;
-        // if 'logcum' is close to zero, exp(logcum) will be close to 1, and thus the precision of
-        // expm1 is more important. If 'logcum' is large and negative, exp(logcum) will be close to
-        // zero, and thus the precision of log1p is more important.
+        // Basically, we want to compute 'log(1 - exp(log_cumulative))', but need to be a bit smart about where the subtraction from 1 occurs.
+        // The logic is derived from https://github.com/SurajGupta/r-source/blob/master/src/nmath/dpq.h, specifically:
+        // - if 'log_cumulative' is close to zero, 'exp(log_cumulative)' will be close to 1, and thus the precision of 'expm1' is more important.
+        // - if 'log_cumulative' is large and negative, 'exp(log_cumulative)' will be close to zero, and thus the precision of 'log1p' is more important.
         if (log_cumulative > -std::log(2)) {
             auto p = -std::expm1(log_cumulative);
             return (p > 0 ? std::log(p) : -std::numeric_limits<double>::infinity());
