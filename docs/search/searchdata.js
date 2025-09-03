@@ -1,12 +1,12 @@
 var indexSectionsWithContent =
 {
-  0: "chloptu",
+  0: "chiloptu",
   1: "o",
   2: "p",
   3: "p",
   4: "c",
   5: "lu",
-  6: "cht"
+  6: "chit"
 };
 
 var indexSectionNames =

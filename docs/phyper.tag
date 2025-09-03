@@ -39,8 +39,8 @@
   </compound>
   <compound kind="page">
     <name>index</name>
-    <title>Hypergeometric tail calculations</title>
+    <title>Hypergeometric tail calculations in C++</title>
     <filename>index.html</filename>
-    <docanchor file="index.html" title="Hypergeometric tail calculations">md__2github_2workspace_2README</docanchor>
+    <docanchor file="index.html" title="Hypergeometric tail calculations in C++">md__2github_2workspace_2README</docanchor>
   </compound>
 </tagfile>

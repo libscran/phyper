@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['log_0',['log',['../structphyper_1_1Options.html#ad5c539121bea3832bf216583f2aecb1e',1,'phyper::Options']]]
+  ['in_20c_0',['Hypergeometric tail calculations in C++',['../index.html',1,'']]]
 ];

@@ -35,7 +35,7 @@ MathJax.Hub.Config({
   <td id="projectalign">
    <div id="projectname">phyper
    </div>
-   <div id="projectbrief">Hypergeometric tail calculations</div>
+   <div id="projectbrief">Hypergeometric tail calculations in C++</div>
   </td>
  </tr>
  </tbody>
@@ -153,24 +153,24 @@ template&lt;typename Count_ &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Compute the tail probabilities for the hypergeometric distribution. It is intended for use in quantifying gene set enrichment in marker lists. The "successes" are the genes in the set, the "failures" are all other genes, and the drawing process typically involves picking the top N markers; our aim is to compute the p-value for enrichment of genes in the set among the top markers.</p>
+<p>Compute the tail probabilities for the hypergeometric distribution. It is intended for use in quantifying gene set enrichment in a list of top marker genes. The "successes" are the genes in the set, the "failures" are all other genes, and the drawing process typically involves selecting the top markers; our aim is to compute the p-value for enrichment of genes in the set among the top markers.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Count_</td><td>Integer type for the number of genes. </td></tr>
+    <tr><td class="paramname">Count_</td><td>Integer type of the number of genes.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">drawn_inside</td><td>Number of genes inside the set that were drawn. </td></tr>
-    <tr><td class="paramname">num_inside</td><td>Total number of genes in the set. </td></tr>
-    <tr><td class="paramname">num_outside</td><td>Total number of genes outside the set. </td></tr>
-    <tr><td class="paramname">num_drawn</td><td>Number of genes that were drawn. </td></tr>
+    <tr><td class="paramname">drawn_inside</td><td>Number of genes in the gene set that were selected as markers. </td></tr>
+    <tr><td class="paramname">num_inside</td><td>Total number of genes in the gene set. </td></tr>
+    <tr><td class="paramname">num_outside</td><td>Total number of genes outside the gene set. </td></tr>
+    <tr><td class="paramname">num_drawn</td><td>Number of genes that were selected as top markers. </td></tr>
     <tr><td class="paramname">options</td><td>Further options for the calculation.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Probability of randomly drawing at least <code>drawn_inside</code> genes from the set, if <code><a class="el" href="structphyper_1_1Options.html#a50615b2e1137e100a6cda600e25e4a1c">Options::upper_tail</a> = true</code>. Otherwise, the probability of randomly drawing no more than <code>drawn_inside</code> genes from the set. These probabilities are log-transformed in <code><a class="el" href="structphyper_1_1Options.html#ad5c539121bea3832bf216583f2aecb1e">Options::log</a> = true</code>. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Probability of randomly selecting at least <code>drawn_inside</code> genes from the gene set, if <code><a class="el" href="structphyper_1_1Options.html#a50615b2e1137e100a6cda600e25e4a1c">Options::upper_tail</a> = true</code>. Otherwise, the probability of randomly selecting no more than <code>drawn_inside</code> genes from the gene set. These probabilities are log-transformed when <code><a class="el" href="structphyper_1_1Options.html#ad5c539121bea3832bf216583f2aecb1e">Options::log</a> = true</code>. </dd></dl>
 
 </div>
 </div>
