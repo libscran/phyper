@@ -142,4 +142,10 @@ TEST(HypergeometricTail, EdgeCases) {
         EXPECT_TRUE(std::isinf(phyper::compute(-1, 20, 30, 20, hopt)));
         EXPECT_EQ(phyper::compute(20, 20, 30, 20, hopt), 0);
     }
+
+    {
+        scran_tests::expect_error([]() -> void {
+            phyper::compute<unsigned char>(10, 255, 255, 10, phyper::Options{});
+        }, "integer overflow");
+    }
 }

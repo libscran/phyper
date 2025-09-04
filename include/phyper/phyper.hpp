@@ -106,9 +106,13 @@ double compute(Count_ drawn_inside, Count_ num_inside, Count_ num_outside, const
         }
     }
 
+    if (std::numeric_limits<Count_>::max() - num_inside < num_outside) {
+        throw std::runtime_error("sum of 'num_inside' and 'num_outside' results in integer overflow");
+    }
+    const Count_ num_total = num_outside + num_inside;
+
     // Subtracting 1 to include the probably mass of 'drawn_inside' in the upper tail calculations.
-    bool needs_upper = options.upper_tail;
-    if (needs_upper) {
+    if (options.upper_tail) {
         --drawn_inside;
     }
 
@@ -117,7 +121,7 @@ double compute(Count_ drawn_inside, Count_ num_inside, Count_ num_outside, const
     // If that's the tail that we wanted, then great; we can compute it directly without worrying about loss of precision from '1 - [some larger tail]'.
     // If it's not the tail we wanted, then we compute '1 - [this smaller tail]' and we don't have to worry about accumulation of errors from summation towards 1.
     // In addition, the smaller tail is usually faster to compute but this is a secondary effect.
-    const Count_ num_total = num_outside + num_inside;
+    bool needs_upper = options.upper_tail;
     if (static_cast<double>(drawn_inside) * static_cast<double>(num_total) > static_cast<double>(num_drawn) * static_cast<double>(num_inside)) {
         std::swap(num_inside, num_outside);
         drawn_inside = num_drawn - drawn_inside - 1; // Guaranteed to be non-negative due to edge case protection; we already decremented drawn_inside when upper_tail = true.
