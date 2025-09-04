@@ -33,8 +33,8 @@
       <type>double</type>
       <name>compute</name>
       <anchorfile>namespacephyper.html</anchorfile>
-      <anchor>af6f1991963966528e08b3577174f5661</anchor>
-      <arglist>(Count_ drawn_inside, Count_ num_inside, Count_ num_outside, Count_ num_drawn, const Options &amp;options)</arglist>
+      <anchor>a9d4aed883d9b07b7ad25c356579b4e63</anchor>
+      <arglist>(Count_ drawn_inside, Count_ num_inside, Count_ num_outside, const Count_ num_drawn, const Options &amp;options)</arglist>
     </member>
   </compound>
   <compound kind="page">
