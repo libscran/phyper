@@ -38,7 +38,7 @@ struct Options {
 namespace internal {
 
 template<typename Count_>
-long double lfactorial(Count_ x) {
+long double lfactorial(const Count_ x) {
     // Computing it exactly for small numbers, to avoid unnecessarily
     // large relative inaccuracy from the approximation. Threshold of
     // 12 is chosen more-or-less arbitrarily... but 12! is the largest
@@ -88,7 +88,7 @@ long double lfactorial(Count_ x) {
  * These probabilities are log-transformed when `Options::log = true`.
  */
 template<typename Count_>
-double compute(Count_ drawn_inside, Count_ num_inside, Count_ num_outside, Count_ num_drawn, const Options& options) {
+double compute(Count_ drawn_inside, Count_ num_inside, Count_ num_outside, const Count_ num_drawn, const Options& options) {
     // Handling all the edge cases.
     if (options.upper_tail) {
         if (drawn_inside <= 0 || (num_drawn >= num_outside && drawn_inside <= num_drawn - num_outside)) {
@@ -107,7 +107,8 @@ double compute(Count_ drawn_inside, Count_ num_inside, Count_ num_outside, Count
     }
 
     // Subtracting 1 to include the probably mass of 'drawn_inside' in the upper tail calculations.
-    if (options.upper_tail) {
+    bool needs_upper = options.upper_tail;
+    if (needs_upper) {
         --drawn_inside;
     }
 
@@ -116,8 +117,8 @@ double compute(Count_ drawn_inside, Count_ num_inside, Count_ num_outside, Count
     // If that's the tail that we wanted, then great; we can compute it directly without worrying about loss of precision from '1 - [some larger tail]'.
     // If it's not the tail we wanted, then we compute '1 - [this smaller tail]' and we don't have to worry about accumulation of errors from summation towards 1.
     // In addition, the smaller tail is usually faster to compute but this is a secondary effect.
-    bool needs_upper = options.upper_tail;
-    if (static_cast<double>(drawn_inside) * static_cast<double>(num_inside + num_outside) > static_cast<double>(num_drawn) * static_cast<double>(num_inside)) {
+    const Count_ num_total = num_outside + num_inside;
+    if (static_cast<double>(drawn_inside) * static_cast<double>(num_total) > static_cast<double>(num_drawn) * static_cast<double>(num_inside)) {
         std::swap(num_inside, num_outside);
         drawn_inside = num_drawn - drawn_inside - 1; // Guaranteed to be non-negative due to edge case protection; we already decremented drawn_inside when upper_tail = true.
         needs_upper = !needs_upper;
@@ -136,8 +137,7 @@ double compute(Count_ drawn_inside, Count_ num_inside, Count_ num_outside, Count
      */
     Count_ denom1a = drawn_inside, denom1b = num_inside - denom1a;
     Count_ denom2a = num_drawn - drawn_inside, denom2b = num_outside - denom2a; // be careful with the second subtraction to avoid underflow for unsigned Count_.
-    Count_ num_total = num_outside + num_inside;
-    long double log_probability = 
+    const long double log_probability = 
         + internal::lfactorial(num_inside) - internal::lfactorial(denom1a) - internal::lfactorial(denom1b) // lchoose(num_inside, num_inside) 
         + internal::lfactorial(num_outside) - internal::lfactorial(denom2a) - internal::lfactorial(denom2b) // lchoose(num_outside, num_drawn - drawn_inside) 
         - internal::lfactorial(num_total) + internal::lfactorial(num_drawn) + internal::lfactorial(num_total - num_drawn); // -lchoose(num_total, num_drawn)
@@ -160,7 +160,7 @@ double compute(Count_ drawn_inside, Count_ num_inside, Count_ num_outside, Count
         --denom2b;
     }
 
-    long double log_cumulative = std::log1p(cumulative) + log_probability;
+    const long double log_cumulative = std::log1p(cumulative) + log_probability;
     if (!needs_upper) {
         if (options.log) {
             return log_cumulative;
@@ -175,10 +175,10 @@ double compute(Count_ drawn_inside, Count_ num_inside, Count_ num_outside, Count
         // - if 'log_cumulative' is close to zero, 'exp(log_cumulative)' will be close to 1, and thus the precision of 'expm1' is more important.
         // - if 'log_cumulative' is large and negative, 'exp(log_cumulative)' will be close to zero, and thus the precision of 'log1p' is more important.
         if (log_cumulative > -std::log(2)) {
-            auto p = -std::expm1(log_cumulative);
+            const auto p = -std::expm1(log_cumulative);
             return (p > 0 ? std::log(p) : -std::numeric_limits<double>::infinity());
         } else {
-            auto p = -std::exp(log_cumulative);
+            const auto p = -std::exp(log_cumulative);
             return (p > -1 ? std::log1p(p) : -std::numeric_limits<double>::infinity());
         }
     } else {
