@@ -19,11 +19,14 @@ TEST(HypergeometricTail, LogFactorial) {
             ++counter;
             sofar += std::log(counter);
         }
-        scran_tests::compare_almost_equal(sofar, phyper::internal::lfactorial(i));
+        scran_tests::compare_almost_equal(sofar, phyper::internal::lfactorial(i), scran_tests::CompareAlmostEqualParameters());
     }
 }
 
 TEST(HypergeometricTail, Basic) {
+    scran_tests::CompareAlmostEqualParameters compopt;
+    compopt.relative_tolerance = 0.001;
+
     {
         // Checking for consistency with R. We use a fairly generous tolerance
         // as our factorial approximation is not as accurate as R's. Note that
@@ -32,39 +35,39 @@ TEST(HypergeometricTail, Basic) {
         phyper::Options hopt;
 
         // > phyper(3, 55, 101, 23, lower.tail=FALSE)
-        scran_tests::compare_almost_equal(0.9887246, phyper::compute(4, 55, 101, 23, hopt), /* tol=*/ 0.001);
+        scran_tests::compare_almost_equal(0.9887246, phyper::compute(4, 55, 101, 23, hopt), compopt);
 
         // > phyper(5, 20, 30, 20, lower.tail=FALSE)
-        scran_tests::compare_almost_equal(0.9307521, phyper::compute(6, 20, 30, 20, hopt), /* tol=*/ 0.001);
+        scran_tests::compare_almost_equal(0.9307521, phyper::compute(6, 20, 30, 20, hopt), compopt);
 
         // > phyper(10, 21, 14, 18, lower.tail=FALSE)
-        scran_tests::compare_almost_equal(0.5815154, phyper::compute(11, 21, 14, 18, hopt), /* tol=*/ 0.001);
+        scran_tests::compare_almost_equal(0.5815154, phyper::compute(11, 21, 14, 18, hopt), compopt);
 
         // > phyper(20, 33, 8, 25, lower.tail=FALSE)
-        scran_tests::compare_almost_equal(0.3743729, phyper::compute(21, 33, 8, 25, hopt), /* tol=*/ 0.001);
+        scran_tests::compare_almost_equal(0.3743729, phyper::compute(21, 33, 8, 25, hopt), compopt);
 
         // > phyper(9, 18, 18218 - 18, 103, lower.tail=FALSE)
-        scran_tests::compare_almost_equal(8.983946e-19, phyper::compute(10, 18, 18218-18, 103, hopt), /* tol=*/ 0.001);
+        scran_tests::compare_almost_equal(8.983946e-19, phyper::compute(10, 18, 18218-18, 103, hopt), compopt);
 
         // Check for correct behavior when num_black, num_white < num_drawn.
         {
             // > phyper(3, 5, 8, 10, lower.tail=FALSE)
-            scran_tests::compare_almost_equal(0.6853147, phyper::compute(4, 5, 8, 10, hopt), /* tol=*/ 0.001);
+            scran_tests::compare_almost_equal(0.6853147, phyper::compute(4, 5, 8, 10, hopt), compopt);
 
             // > phyper(13, 15, 18, 20, lower.tail=FALSE)
-            scran_tests::compare_almost_equal(0.000500776, phyper::compute(14, 15, 18, 20, hopt), /* tol=*/ 0.001);
+            scran_tests::compare_almost_equal(0.000500776, phyper::compute(14, 15, 18, 20, hopt), compopt);
         }
 
         // Check for correct boundary case behavior when num_black == num_drawn or num_white == num_drawn.
         {
             // > phyper(20, 33, 25, 25, lower.tail=FALSE)
-            scran_tests::compare_almost_equal(0.0002843443, phyper::compute(21, 33, 25, 25, hopt), /* tol=*/ 0.001);
+            scran_tests::compare_almost_equal(0.0002843443, phyper::compute(21, 33, 25, 25, hopt), compopt);
 
             // > phyper(20, 33, 25, 33, lower.tail=FALSE)
-            scran_tests::compare_almost_equal(0.1780022, phyper::compute(21, 33, 25, 33, hopt), /* tol=*/ 0.001);
+            scran_tests::compare_almost_equal(0.1780022, phyper::compute(21, 33, 25, 33, hopt), compopt);
 
             // > phyper(20, 25, 25, 25, lower.tail=FALSE)
-            scran_tests::compare_almost_equal(1.308459e-06, phyper::compute(21, 25, 25, 25, hopt), /* tol=*/ 0.001);
+            scran_tests::compare_almost_equal(1.308459e-06, phyper::compute(21, 25, 25, 25, hopt), compopt);
         }
     }
 
@@ -73,19 +76,19 @@ TEST(HypergeometricTail, Basic) {
         hopt.upper_tail = false;
 
         // > phyper(3, 55, 101, 23)
-        scran_tests::compare_almost_equal(0.01127538, phyper::compute(3, 55, 101, 23, hopt), /* tol=*/ 0.001);
+        scran_tests::compare_almost_equal(0.01127538, phyper::compute(3, 55, 101, 23, hopt), compopt);
 
         // > phyper(5, 20, 30, 20)
-        scran_tests::compare_almost_equal(0.06924787, phyper::compute(5, 20, 30, 20, hopt), /* tol=*/ 0.001);
+        scran_tests::compare_almost_equal(0.06924787, phyper::compute(5, 20, 30, 20, hopt), compopt);
 
         // > phyper(10, 21, 14, 18)
-        scran_tests::compare_almost_equal(0.4184846, phyper::compute(10, 21, 14, 18, hopt), /* tol=*/ 0.001);
+        scran_tests::compare_almost_equal(0.4184846, phyper::compute(10, 21, 14, 18, hopt), compopt);
 
         // > phyper(20, 33, 8, 25)
-        scran_tests::compare_almost_equal(0.6256271, phyper::compute(20, 33, 8, 25, hopt), /* tol=*/ 0.001);
+        scran_tests::compare_almost_equal(0.6256271, phyper::compute(20, 33, 8, 25, hopt), compopt);
 
         // > phyper(20, 33, 25, 25)
-        scran_tests::compare_almost_equal(0.9997157, phyper::compute(20, 33, 25, 25, hopt), /* tol=*/ 0.001);
+        scran_tests::compare_almost_equal(0.9997157, phyper::compute(20, 33, 25, 25, hopt), compopt);
     }
 }
 
@@ -106,6 +109,9 @@ TEST(HypergeometricTail, Logged) {
 }
 
 TEST(HypergeometricTail, EdgeCases) {
+    scran_tests::CompareAlmostEqualParameters compopt;
+    compopt.relative_tolerance = 0.01;
+
     {
         phyper::Options hopt;
 
@@ -115,7 +121,7 @@ TEST(HypergeometricTail, EdgeCases) {
 
         // However, upper tail requests do not hit a special case when num_drawn = drawn_white,
         // as the probability mass at drawn_white is computed here.
-        scran_tests::compare_almost_equal(2.11066e-14, phyper::compute(20, 20, 30, 20, hopt), /* tol=*/ 0.01);
+        scran_tests::compare_almost_equal(2.11066e-14, phyper::compute(20, 20, 30, 20, hopt), compopt);
 
         // The number of drawn white balls must be at least 11 here, because
         // there just aren't enough black balls; thus the probability of drawing

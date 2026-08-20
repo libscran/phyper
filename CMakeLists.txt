@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(phyper
-    VERSION 0.1.1
+project(
+    phyper
+    VERSION 0.1.2
     DESCRIPTION "Hypergeometric tail calculations"
-    LANGUAGES CXX)
+    LANGUAGES CXX
+)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
